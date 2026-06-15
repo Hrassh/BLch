@@ -1,0 +1,14 @@
+C:\Users\tema3\source\repos\BlockСh\BlockСh\bin\Debug\net10.0\BlockСh.exe
+C:\Users\tema3\source\repos\BlockСh\BlockСh\bin\Debug\net10.0\BlockСh.deps.json
+C:\Users\tema3\source\repos\BlockСh\BlockСh\bin\Debug\net10.0\BlockСh.runtimeconfig.json
+C:\Users\tema3\source\repos\BlockСh\BlockСh\bin\Debug\net10.0\BlockСh.dll
+C:\Users\tema3\source\repos\BlockСh\BlockСh\bin\Debug\net10.0\BlockСh.pdb
+C:\Users\tema3\source\repos\BlockСh\BlockСh\obj\Debug\net10.0\BlockСh.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\tema3\source\repos\BlockСh\BlockСh\obj\Debug\net10.0\BlockСh.AssemblyInfoInputs.cache
+C:\Users\tema3\source\repos\BlockСh\BlockСh\obj\Debug\net10.0\BlockСh.AssemblyInfo.cs
+C:\Users\tema3\source\repos\BlockСh\BlockСh\obj\Debug\net10.0\BlockСh.csproj.CoreCompileInputs.cache
+C:\Users\tema3\source\repos\BlockСh\BlockСh\obj\Debug\net10.0\BlockСh.dll
+C:\Users\tema3\source\repos\BlockСh\BlockСh\obj\Debug\net10.0\refint\BlockСh.dll
+C:\Users\tema3\source\repos\BlockСh\BlockСh\obj\Debug\net10.0\BlockСh.pdb
+C:\Users\tema3\source\repos\BlockСh\BlockСh\obj\Debug\net10.0\BlockСh.genruntimeconfig.cache
+C:\Users\tema3\source\repos\BlockСh\BlockСh\obj\Debug\net10.0\ref\BlockСh.dll
