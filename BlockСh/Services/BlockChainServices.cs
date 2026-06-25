@@ -19,7 +19,7 @@ namespace BlockСh.Services
         public decimal BaseFeePerByte { get; set; } = 0.05m;
         public int MaxBlockSizeBytes { get; set; } = 150;
         public int CoinbaseMaturity { get; set; } = 3;
-
+        public int MaxReorgDepth { get; set; } = 5;
         private readonly HashingService _hashingService;
         private readonly MiningServices _miningServices;
         private readonly TransactionServices _transactionServices;
@@ -102,7 +102,7 @@ namespace BlockСh.Services
 
             var totalFees = transactionsToPack.Sum(tx => tx.Fee);
 
-    
+
             var rewardTransaction = new Transaction("COINBASE", minerAddress, MiningReward + totalFees, 0, "MAIN");
             blockTransactions.Add(rewardTransaction);
 
@@ -171,10 +171,24 @@ namespace BlockСh.Services
                 {
                     return false;
                 }
+
+              
+                if (currentBlock.Timestamp <= previousBlock.Timestamp)
+                {
+                    Console.WriteLine($"Блок #{currentBlock.index} має час з минулого.");
+                    return false;
+                }
+
+             
+                if (currentBlock.Timestamp > DateTime.UtcNow.AddHours(2))
+                {
+                    Console.WriteLine($" Блок #{currentBlock.index} занадто далеко в майбутньому.");
+                    return false;
+                }
+        
             }
             return true;
         }
-
 
         public decimal GetBalance(string address, string tokenSymbol = "MAIN")
         {
@@ -187,7 +201,7 @@ namespace BlockСh.Services
             {
                 foreach (var tx in block.Transactions)
                 {
-            
+
                     if (string.Equals(tx.From, "COINBASE", StringComparison.OrdinalIgnoreCase) &&
                         string.Equals(tx.To, address, StringComparison.OrdinalIgnoreCase) &&
                         tokenSymbol == "MAIN")
@@ -196,7 +210,7 @@ namespace BlockСh.Services
                         continue;
                     }
 
-               
+
                     if (string.Equals(tx.From, "MINT", StringComparison.OrdinalIgnoreCase) &&
                         string.Equals(tx.To, address, StringComparison.OrdinalIgnoreCase) &&
                         string.Equals(tx.TokenSymbol, tokenSymbol, StringComparison.OrdinalIgnoreCase))
@@ -205,7 +219,7 @@ namespace BlockСh.Services
                         continue;
                     }
 
-            
+
                     if (string.Equals(tx.TokenSymbol, tokenSymbol, StringComparison.OrdinalIgnoreCase))
                     {
                         if (string.Equals(tx.To, address, StringComparison.OrdinalIgnoreCase))
@@ -218,7 +232,7 @@ namespace BlockСh.Services
                         }
                     }
 
-               
+
                     if (string.Equals(tx.From, address, StringComparison.OrdinalIgnoreCase) &&
                         tokenSymbol == "MAIN" &&
                         !string.Equals(tx.From, "COINBASE", StringComparison.OrdinalIgnoreCase) &&
@@ -263,7 +277,7 @@ namespace BlockСh.Services
             PendingTransactions.Add(tx);
         }
 
-   
+
         public List<string> GetUserTokens(string address)
         {
             var tokens = Chain.SelectMany(b => b.Transactions)
@@ -320,9 +334,35 @@ namespace BlockСh.Services
         public bool ResolveConsensus(List<Block> fChain)
         {
             if (!IsChainValid(fChain)) return false;
+
             if (fChain.Count > this.Chain.Count)
             {
+                int forkPointIndex = -1;
+                for (int i = 0; i < Chain.Count; i++)
+                {
+                    if (i >= fChain.Count || Chain[i].Hash != fChain[i].Hash)
+                    {
+                        forkPointIndex = i - 1;
+                        break;
+                    }
+                }
+
+                if (forkPointIndex == -1)
+                    forkPointIndex = Chain.Count - 1;
+
+                int reorgDepth = Chain.Count - 1 - forkPointIndex;
+
+                if (reorgDepth > MaxReorgDepth)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"\nСпроба глибокої реорганізації. Глибина: {reorgDepth} (Макс: {MaxReorgDepth}). Локальні блоки вже фіналізовані.");
+                    Console.ResetColor();
+                    return false;
+                }
+
+
                 this.Chain = new List<Block>(fChain);
+                _fileServices.SaveChain(Chain);
                 return true;
             }
             return false;
